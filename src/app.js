@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 app.get("/", (req, res) => res.send("Yeah Up And Running"));
 
-app.post("/pdf", async (req, res) => {
+app.get("/pdf", async (req, res) => {
   const html = req.body?.html || "<h1>Hello world</h1>";
 
   try {
