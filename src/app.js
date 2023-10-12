@@ -24,6 +24,7 @@ app.get("/pdf", async (req, res) => {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--single-process",
+        "--disable-dev-shm-usage",
         "--no-zygote",
       ],
       executablePath:
@@ -32,7 +33,7 @@ app.get("/pdf", async (req, res) => {
           : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "domcontentloaded" });
+    await page.setContent(html, { waitUntil: "networkidle2" });
     await page.waitForNavigation();
     const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
     await browser.close();
