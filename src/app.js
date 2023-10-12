@@ -23,17 +23,15 @@ app.get("/pdf", async (req, res) => {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        // "--single-process",
+        "--single-process",
         "--disable-dev-shm-usage",
         "--no-zygote",
       ],
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+      executablePath: puppeteer.executablePath(),
+      // process.env.NODE_ENV === "production"
+      //   ? process.env.PUPPETEER_EXECUTABLE_PATH
     });
     const page = await browser.newPage();
-    await page.waitForNavigation();
     await page.setContent(html, { waitUntil: "networkidle2" });
     const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
     await browser.close();
