@@ -32,13 +32,15 @@ app.get("/pdf", async (req, res) => {
       //   ? process.env.PUPPETEER_EXECUTABLE_PATH
     });
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle2" });
-    const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
+    await page.goto("www.google.com");
+    const img = await page.screenshot({ encoding: "base64", type: "jpeg" });
+    // await page.setContent(html, { waitUntil: "networkidle2" });
+    // const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
     await browser.close();
 
-    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Type", "image/jpeg");
 
-    return res.status(200).send(new Buffer.from(pdfBuffer));
+    return res.status(200).send(img);
   } catch (error) {
     console.log(error);
   }
