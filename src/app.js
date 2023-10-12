@@ -27,20 +27,19 @@ app.get("/pdf", async (req, res) => {
         "--disable-dev-shm-usage",
         "--no-zygote",
       ],
-      executablePath: puppeteer.executablePath(),
-      // process.env.NODE_ENV === "production"
-      //   ? process.env.PUPPETEER_EXECUTABLE_PATH
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
-    await page.goto("https://www.google.com");
-    const img = await page.screenshot({ encoding: "base64", type: "jpeg" });
-    // await page.setContent(html, { waitUntil: "networkidle2" });
-    // const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
+    await page.setContent(html, { waitUntil: "networkidle2" });
+    const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
     await browser.close();
 
-    res.setHeader("Content-Type", "image/jpeg");
+    res.setHeader("Content-Type", "application/pdf");
 
-    return res.status(200).send(img);
+    return res.status(200).send(new Buffer.from(pdfBuffer));
   } catch (error) {
     console.log(error);
   }
