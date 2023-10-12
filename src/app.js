@@ -32,7 +32,10 @@ app.post("/pdf", async (req, res) => {
           : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle2" });
+    const sleep = (duration) =>
+      new Promise((resolve) => setTimeout(resolve, duration));
+    await sleep(3000);
+    await page.setContent(html, { waitUntil: "domcontentloaded" });
     const pdfBuffer = await page.pdf({ landscape: true, width: "198mm" });
     await browser.close();
 
